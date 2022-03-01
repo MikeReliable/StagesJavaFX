@@ -44,6 +44,7 @@ public class Controller {
 
     @FXML
     void open(ActionEvent event) {
+        fileChooser.setInitialDirectory(new File("C:\\"));
         file = fileChooser.showOpenDialog(new Stage());
         locat.clear();
         locat.appendText(file.getAbsolutePath());
@@ -85,7 +86,6 @@ public class Controller {
 
     @FXML
     void initialize() {
-        fileChooser.setInitialDirectory(new File("src/sample/"));
         assert s01 != null : "fx:id=\"s01\" was not injected: check your FXML file 'form.fxml'.";
         assert s02 != null : "fx:id=\"s02\" was not injected: check your FXML file 'form.fxml'.";
         assert step != null : "fx:id=\"step\" was not injected: check your FXML file 'form.fxml'.";
