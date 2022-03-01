@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #2E3348;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #2E3348;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <MenuBar prefHeight="25.0" prefWidth="600.0">
         <menus>
@@ -22,12 +22,12 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
             </items>
           </Menu>
         </menus>
       </MenuBar>
-      <Label layoutX="40.0" layoutY="70.0" prefHeight="39.0" prefWidth="266.0" text="Выберите интервал S0" textFill="WHITE">
+      <Label layoutX="40.0" layoutY="72.0" prefHeight="39.0" prefWidth="266.0" text="Выберите интервал S0" textFill="WHITE">
          <font>
             <Font name="Times New Roman" size="26.0" />
          </font>
@@ -40,18 +40,21 @@
             <Cursor fx:constant="DEFAULT" />
          </cursor>
       </Button>
-      <TextArea fx:id="text" layoutX="25.0" layoutY="150.0" prefHeight="225.0" prefWidth="550.0" />
+      <TextArea fx:id="text" layoutX="25.0" layoutY="150.0" prefHeight="225.0" prefWidth="550.0" text="Программа для рассчета стадийности от показателя S0  Файл данных *.txt,  1 колонка -деформация, 2 - ln(e), 3- S" wrapText="true">
+         <font>
+            <Font size="20.0" />
+         </font></TextArea>
       <TextField fx:id="index" layoutX="375.0" layoutY="110.0" prefHeight="25.0" prefWidth="90.0" promptText="Показатель n" />
-      <Label layoutX="340.0" layoutY="70.0" prefHeight="39.0" prefWidth="152.0" text="Показатель n" textFill="WHITE">
+      <Label layoutX="340.0" layoutY="72.0" prefHeight="39.0" prefWidth="152.0" text="Показатель n" textFill="WHITE">
          <font>
             <Font name="Times New Roman" size="26.0" />
          </font>
       </Label>
-      <TextField fx:id="location" layoutX="25.0" layoutY="45.0" prefHeight="25.0" prefWidth="417.0" />
-      <Label layoutX="454.0" layoutY="38.0" prefHeight="39.0" prefWidth="70.0" text="Файл" textFill="WHITE">
+      <Label layoutX="440.0" layoutY="38.0" prefHeight="39.0" prefWidth="70.0" text="Файл" textFill="WHITE">
          <font>
             <Font name="Times New Roman" size="26.0" />
          </font>
       </Label>
+      <TextArea fx:id="locat" layoutX="25.0" layoutY="40.0" prefHeight="7.0" prefWidth="400.0" promptText="выберите файл" />
    </children>
 </AnchorPane>

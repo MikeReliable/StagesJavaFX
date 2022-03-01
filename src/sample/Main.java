@@ -17,7 +17,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Group group = new Group();
-        Scene scene = new Scene(group, 600, 400);
+        Scene scene = new Scene(group);
 
         Parent content = FXMLLoader.load(getClass().getResource("form.fxml"));
         BorderPane root = new BorderPane();
@@ -25,6 +25,7 @@ public class Main extends Application {
         group.getChildren().add(root);
 
         primaryStage.setScene(scene);
+        primaryStage.setTitle("S0 selection");
         primaryStage.show();
     }
 }

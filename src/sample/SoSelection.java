@@ -10,12 +10,14 @@ import java.util.List;
 public class SoSelection {
 
     private String answer = null, answerRevers = null;
-    private String result = null;
+    private String result;
 
-    public String find(int S01, int S02, int step, double degree, File file) {
+    public String find(int S01, int S02, int step, String n, File file) {
         try {
+            result = null;
             BufferedReader reader = new BufferedReader(new FileReader(file));
-
+            n = n.replace(',', '.');
+            double degree = Double.parseDouble(n);
             List<String> lines = new ArrayList<>();
             DecimalFormat df = new DecimalFormat("##.###");
             String line;
