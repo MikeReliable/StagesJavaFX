@@ -41,7 +41,7 @@ public class Controller {
     @FXML
     void open(ActionEvent event) {
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("txt file","*.txt"));
+                new FileChooser.ExtensionFilter("data file","*.txt"));
         fileChooser.setInitialDirectory(new File("C:\\"));
         file = fileChooser.showOpenDialog(new Stage());
         locat.clear();
