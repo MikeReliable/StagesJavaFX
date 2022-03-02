@@ -17,7 +17,7 @@ public class SoSelection {
         String result;
 
         try {
-            result = null;
+            result = "";
             n = n.replace(',', '.');
             double degree = Double.parseDouble(n);
 
@@ -67,11 +67,13 @@ public class SoSelection {
                         numSum++;
                         double elongation = defEnd - defStart;
 //                        System.out.println("S1:" + S1 + " S2:" + S2 + " S3:" + S3 + " S4:" + S4 + " j:" + j);
-                        if (elongation < 5 || degreeCalc >= degree * 0.9 && degreeCalc <= degree * 1.1) { // условие поиска стадии по максимальному диапазону
-                            degreeCalc = Math.abs((numSum * S3 - S1 * S2) / (numSum * S4 - S1 * S1));  // определение коэффициента n
+                        degreeCalc = Math.abs((numSum * S3 - S1 * S2) / (numSum * S4 - S1 * S1));  // определение коэффициента n
+                        correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
+                        if (elongation < 4 || degreeCalc >= degree * 0.95 && degreeCalc <= degree * 1.05 && correlat > 0.95) { // условие поиска стадии по максимальному диапазону
 //                            System.out.println("degreeCalc:" + degreeCalc + " numSum: " + numSum + " elongation:" + elongation + " defStart:" + defStart);
-                            if (degreeCalc >= degree * 0.9 && degreeCalc <= degree * 1.1) {
-                                correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
+//                            System.out.println("Degree calculation: " + degreeCalc + "\tCorrelat: " + correlat);
+                            if (degreeCalc >= degree * 0.95 && degreeCalc <= degree * 1.05 && correlat > 0.95) {
+//                                correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
 //                                System.out.println("Degree calculation: " + degreeCalc + "\tCorrelat: " + correlat);
                                 String initialDefEnd = df.format(defEnd);
                                 String initialDefStart = df.format(defStart);
@@ -99,10 +101,15 @@ public class SoSelection {
 
                 // уточнение искомого интервала за счет обрезки кривой справа
                 // решение проблемы отклонения кривой от линейности при больших массивах данных
-                for (int q = endRow; q > startRow; q--) {  // Revers start
+                double elongationReversMax = 0;
+                for (int q = endRow; q > startRow; q = q - 10) {  // Revers start
                     double degreeCalcRevers, correlatRevers;
                     double numSumRevers = 0;
+                    double elongationRevers;
                     double S11 = 0, S21 = 0, S31 = 0, S41 = 0, S51 = 0;
+                    String m2 = lines.get(q);
+                    String[] split2 = m2.split("\t");
+                    double startPoint = Double.parseDouble(split2[0]); // Read Strain column
 //                System.out.println("startRow: " + startRow + " endRow: " + endRow);
                     for (int m = q; m < endRow; m = m + 10) {
 //                    System.out.println("k: " + k + " endRow: " + endRow);
@@ -124,22 +131,28 @@ public class SoSelection {
                         degreeCalcRevers = Math.abs((numSumRevers * S31 - S11 * S21) / (numSumRevers * S41 - S11 * S11));  // определение коэффициента n
                         correlatRevers = Math.abs((numSumRevers * S31 - S11 * S21) / Math.sqrt((numSumRevers * S41 - S11 * S11) * (numSumRevers * S51 - S21 * S21))); // коэффициент корреляции Пирсона
 //                    System.out.println("Degree calculation: " + degreeCalcRevers + "\tCorrelat: " + correlatRevers);
-                        if (degreeCalcRevers >= 0.95 * degree && degreeCalcRevers <= 1.05 * degree && correlatRevers > 0.95) {
-                            double elongationRevers = defEndRevers - defStartRevers;
+                        elongationRevers = defEndRevers - startPoint;
+                        if (degreeCalcRevers >= 0.95 * degree && degreeCalcRevers <= 1.05 * degree && correlatRevers > 0.95 || elongationRevers < 0.3) {
+                            if (degreeCalcRevers >= 0.95 * degree && degreeCalcRevers <= 1.05 * degree && correlatRevers > 0.95) {
+                                if (elongationRevers > elongationReversMax) {
+                                    elongationReversMax = elongationRevers;
 //                        System.out.println("Degree calculation: " + degreeCalcRevers + "\tCorrelat: " + correlatRevers + " j: " + numSumRevers);
-//                        System.out.println("elongationMaxRevers: " + elongationRevers);
-                            double elongRevers = elongationRevers + defStartRevers;
-                            String resultReversString = df.format(correlatRevers);
-                            String defStartString = df.format(defStartRevers);
-                            String elongReversString = df.format(elongRevers);
-                            String elongationMaxReversString = df.format(elongationRevers);
-                            logEnd = x3;
-                            answerRevers = "\nS0=" + k + " " + "n=" + degree + "\nНачало стадии: " + defStartString + "\tОкончание стадии: " + elongReversString + "\n"
-                                    + "Продолжительность: " + elongationMaxReversString + "\tОтклонение: R=" + resultReversString + "\n" +
-                                    "Ln(e)_start=" + logStart + "\tLn(e)_end=" + logEnd + "\n";
+//                                    System.out.println("elongationMaxRevers: " + elongationRevers + " defEndRevers:" + defEndRevers);
+                                    double durationMax = defEndRevers - defStartRevers;
+                                    String resultReversString = df.format(correlatRevers);
+                                    String defStartString = df.format(defStartRevers);
+                                    String elongReversString = df.format(defEndRevers);
+                                    String elongationMaxReversString = df.format(durationMax);
+                                    logEnd = x3;
+                                    answerRevers = "\nS0=" + k + " " + "n=" + degree + "\nНачало стадии: " + defStartString + "\tОкончание стадии: " + elongReversString + "\n"
+                                            + "Продолжительность: " + elongationMaxReversString + "\tОтклонение: R=" + resultReversString + "\n" +
+                                            "Ln(e)_start=" + logStart + "\tLn(e)_end=" + logEnd + "\n";
 //                        System.out.println("Начало стадии: " + defStartString + " Окончание стадии: " + initialDefEndRevers + " Продолжительность: " + initiaElongation + " Отклонение: R=" + initialResult);
 //                        // Лучше использовать ЭТОТ уточненный интервал, утоняющий линейную аппроксимацию справа налево в исследуемом диапазоне деформаций
 //                        System.out.println("Revers! Начало стадии: " + defStartString + " Окончание стадии: " + elongReversString + " Продолжительность: " + elongationMaxReversString + " Отклонение: R=" + resultReversString);
+                                }
+                            }
+                        } else {
                             break;
                         }
                     }
@@ -149,7 +162,8 @@ public class SoSelection {
                 System.out.println("Revers: \t" + answerRevers);
                 result += answerRevers + "\n";
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
             result = "ERROR";
             return result;
