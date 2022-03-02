@@ -11,7 +11,7 @@ public class SoSelection {
 
     int startRow = 1, endRow = 1;
     private double defStartRevers = 0;
-    private String answer = null, answerRevers = null;
+    private String answer = "", answerRevers = "";
 
     public String find(int S01, int S02, int step, String n, File file) {
         String result;

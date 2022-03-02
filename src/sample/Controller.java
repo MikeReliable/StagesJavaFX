@@ -1,22 +1,18 @@
 package sample;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Controller {
 
@@ -44,6 +40,8 @@ public class Controller {
 
     @FXML
     void open(ActionEvent event) {
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("txt file","*.txt"));
         fileChooser.setInitialDirectory(new File("C:\\"));
         file = fileChooser.showOpenDialog(new Stage());
         locat.clear();
@@ -54,11 +52,11 @@ public class Controller {
     void action(MouseEvent event) {
         text.clear();
         if (s01.getText().equals("")) {
-            text.appendText("укажите начало интервала S0\n");
+            text.appendText("укажите начало интервала S0, МПа\n");
         } else if (s02.getText().equals("")) {
-            text.appendText("укажите конец интервала S0\n");
+            text.appendText("укажите конец интервала S0, МПа\n");
         } else if (step.getText().equals("")) {
-            text.appendText("укажите шаг интервала S0\n");
+            text.appendText("укажите шаг интервала S0, МПа\n");
         } else if (index.getText().equals("")) {
             text.appendText("укажите показатель n\n");
         } else if (file == null) {

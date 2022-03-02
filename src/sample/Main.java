@@ -25,7 +25,7 @@ public class Main extends Application {
         group.getChildren().add(root);
 
         primaryStage.setScene(scene);
-        primaryStage.setTitle("S0 selection");
+        primaryStage.setTitle("SoSelector");
         primaryStage.show();
     }
 }
