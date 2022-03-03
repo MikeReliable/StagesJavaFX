@@ -13,7 +13,7 @@ public class SoSelection {
     private double defStartRevers = 0;
     private String answer = "", answerRevers = "";
 
-    public String find(int S01, int S02, int step, String n, File file) {
+    public String find(double S01, double S02, double step, String n, File file) {
         String result;
 
         try {
@@ -35,7 +35,7 @@ public class SoSelection {
             int l = lines.size();
 //            System.out.println("Lines: " + l);
 
-            for (int k = S01; k <= S02; k = k + step) {
+            for (double k = S01; k <= S02; k = k + step) {
                 double elongationMax = 0;
                 double x1 = 0, x2 = 0, x3 = 0, y0, y00, y1, y2, y02, y3, y03;
                 double logStart = 0, logEnd = 0;
@@ -160,7 +160,9 @@ public class SoSelection {
 
                 System.out.println("Direct: \t" + answer);
                 System.out.println("Revers: \t" + answerRevers);
-                result += answerRevers + "\n";
+                if (!answerRevers.equals("")) {
+                    result += answerRevers + "\n";
+                }
             }
         } catch (
                 Exception e) {

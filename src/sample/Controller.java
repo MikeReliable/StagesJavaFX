@@ -62,7 +62,7 @@ public class Controller {
         } else if (file == null) {
             text.appendText("файл не выбран\n");
         } else {
-            String result = selection.find(Integer.parseInt(s01.getText()), Integer.parseInt(s02.getText()), Integer.parseInt(step.getText()), index.getText(), file);
+            String result = selection.find(Double.parseDouble(s01.getText()), Double.parseDouble(s02.getText()), Double.parseDouble(step.getText()), index.getText(), file);
             text.clear();
             text.appendText(result);
         }
