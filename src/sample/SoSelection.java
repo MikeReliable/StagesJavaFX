@@ -9,21 +9,25 @@ import java.util.List;
 
 public class SoSelection {
 
-    int startRow = 1, endRow = 1;
-    private double defStartRevers = 0;
-    private String answer = "", answerRevers = "";
-
-    public String find(double S01, double S02, double step, String n, File file) {
-        String result;
-
+    public String find(String S001, String S002, String step0, String n, File file) {
+        int startRow = 1, endRow = 1;
+        double defStartRevers = 0;
+        String answer = "";
+        String answerRevers = "";
+        String result = "";
+        S001 = S001.replace(',', '.');
+        S002 = S002.replace(',', '.');
+        step0 = step0.replace(',', '.');
+        n = n.replace(',', '.');
+        double degree = Double.parseDouble(n);
+        DecimalFormat df = new DecimalFormat("##.###");
+        String degreeString = df.format(degree);
         try {
-            result = "";
-            n = n.replace(',', '.');
-            double degree = Double.parseDouble(n);
-
+            double S01 = Double.parseDouble(S001);
+            double S02 = Double.parseDouble(S002);
+            double step = Double.parseDouble(step0);
             BufferedReader reader = new BufferedReader(new FileReader(file));
             List<String> lines = new ArrayList<>();
-            DecimalFormat df = new DecimalFormat("##.###");
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.replace(',', '.');
@@ -34,14 +38,18 @@ public class SoSelection {
             }
             int l = lines.size();
 //            System.out.println("Lines: " + l);
-
+            if (S01 > S02) {
+                result = "Ошибка! Недопустимое значение интервала!";
+                return result;
+            }
             for (double k = S01; k <= S02; k = k + step) {
+                String SO = df.format(k);
                 double elongationMax = 0;
-                double x1 = 0, x2 = 0, x3 = 0, y0, y00, y1, y2, y02, y3, y03;
-                double logStart = 0, logEnd = 0;
+                double x1, x2, x3, y0, y00, y1, y2, y02, y3, y03;
+                double logStart = 0, logEnd;
 //                System.out.println("k:" + k);
                 for (int i = 1; i < l; i = i + 10) {
-                    double correlat = 1, degreeCalc = 0, numSum = 0, S1 = 0, S2 = 0, S3 = 0, S4 = 0, S5 = 0;
+                    double correlat, degreeCalc, numSum = 0, S1 = 0, S2 = 0, S3 = 0, S4 = 0, S5 = 0;
 //                System.out.println("Line num:" + (i + 1));
                     String m1 = lines.get(i);
                     String[] split1 = m1.split("\t");
@@ -59,11 +67,11 @@ public class SoSelection {
                         y02 = Double.parseDouble(split2[2]); // Read S column
                         y2 = Math.log(y02 - Double.parseDouble(String.valueOf(k)));
                         // Рассчет коэффициента линейной аппроксимации
-                        S1 += Math.abs(x2);
-                        S2 += Math.abs(y2);
-                        S3 += Math.abs(x2) * Math.abs(y2);
-                        S4 += Math.abs(x2) * Math.abs(x2);
-                        S5 += Math.abs(y2) * Math.abs(y2);
+                        S1 += x2;
+                        S2 += y2;
+                        S3 += x2 * y2;
+                        S4 += x2 * x2;
+                        S5 += y2 * y2;
                         numSum++;
                         double elongation = defEnd - defStart;
 //                        System.out.println("S1:" + S1 + " S2:" + S2 + " S3:" + S3 + " S4:" + S4 + " j:" + j);
@@ -72,7 +80,7 @@ public class SoSelection {
                         if (elongation < 4 || degreeCalc >= degree * 0.95 && degreeCalc <= degree * 1.05 && correlat > 0.95) { // условие поиска стадии по максимальному диапазону
 //                            System.out.println("degreeCalc:" + degreeCalc + " numSum: " + numSum + " elongation:" + elongation + " defStart:" + defStart);
 //                            System.out.println("Degree calculation: " + degreeCalc + "\tCorrelat: " + correlat);
-                            if (degreeCalc >= degree * 0.95 && degreeCalc <= degree * 1.05 && correlat > 0.95) {
+                            if (degreeCalc >= degree * 0.99 && degreeCalc <= degree * 1.04 && correlat > 0.96) {
 //                                correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
 //                                System.out.println("Degree calculation: " + degreeCalc + "\tCorrelat: " + correlat);
                                 String initialDefEnd = df.format(defEnd);
@@ -84,7 +92,7 @@ public class SoSelection {
                                     logStart = x1;
                                     logEnd = x2;
                                     if (elongationMax > 1) { // отбраковка стадий меньше 1 %
-                                        answer = "\nS0=" + k + " " + "n=" + degree + "\nНачало стадии: " + initialDefStart + "\tОкончание стадии: " + initialDefEnd + "\n"
+                                        answer = "\nS0=" + SO + " " + "n=" + degreeString + "\nНачало стадии: " + initialDefStart + "\tОкончание стадии: " + initialDefEnd + "\n"
                                                 + "Продолжительность: " + initialElongation + "\tОтклонение: R=" + initialResult + "\n" +
                                                 "ln(e)_start=" + logStart + " " + "\tln(e)_end=" + logEnd + "\n";
                                         startRow = i;
@@ -120,11 +128,11 @@ public class SoSelection {
                         y03 = Double.parseDouble(split3[2]); // Read S column
                         y3 = Math.log(y03 - Double.parseDouble(String.valueOf(k)));
 //                    System.out.println(x2 + " " + y2);
-                        S11 += Math.abs(x3);
-                        S21 += Math.abs(y3);
-                        S31 += Math.abs(x3) * Math.abs(y3);
-                        S41 += Math.abs(x3) * Math.abs(x3);
-                        S51 += Math.abs(y3) * Math.abs(y3);
+                        S11 += x3;
+                        S21 += y3;
+                        S31 += x3 * y3;
+                        S41 += x3 * x3;
+                        S51 += y3 * y3;
                         numSumRevers++;
 //                    System.out.println("numSumRevers " + numSumRevers);
 //                                        System.out.println("S: " + S11 + " " + S21 + " " + S31 + " " + S41 + " j: " + numSumRevers);//
@@ -144,7 +152,7 @@ public class SoSelection {
                                     String elongReversString = df.format(defEndRevers);
                                     String elongationMaxReversString = df.format(durationMax);
                                     logEnd = x3;
-                                    answerRevers = "\nS0=" + k + " " + "n=" + degree + "\nНачало стадии: " + defStartString + "\tОкончание стадии: " + elongReversString + "\n"
+                                    answerRevers = "\nS0=" + SO + " " + "n=" + degreeString + "\nНачало стадии: " + defStartString + "\tОкончание стадии: " + elongReversString + "\n"
                                             + "Продолжительность: " + elongationMaxReversString + "\tОтклонение: R=" + resultReversString + "\n" +
                                             "Ln(e)_start=" + logStart + "\tLn(e)_end=" + logEnd + "\n";
 //                        System.out.println("Начало стадии: " + defStartString + " Окончание стадии: " + initialDefEndRevers + " Продолжительность: " + initiaElongation + " Отклонение: R=" + initialResult);
@@ -162,12 +170,14 @@ public class SoSelection {
                 System.out.println("Revers: \t" + answerRevers);
                 if (!answerRevers.equals("")) {
                     result += answerRevers + "\n";
+                } else {
+                    result += "\nS0=" + SO + " " + "n=" + degreeString + "\nНет подходящего интервала" + "\n";
                 }
             }
         } catch (
                 Exception e) {
             e.printStackTrace();
-            result = "ERROR";
+            result = "Ошибка! Проверьте правильность вводимых данных!";
             return result;
         }
         return result;
