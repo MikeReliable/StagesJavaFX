@@ -28,8 +28,8 @@ public class Main extends Application {
         group.getChildren().add(root);
 
         primaryStage.setScene(scene);
-        primaryStage.setTitle("SoSelector");
-        primaryStage.getIcons().add(new Image("/sample/IconSoSelector.png"));
+        primaryStage.setTitle("Exx Summator");
+        primaryStage.getIcons().add(new Image("/sample/Surface.png"));
 
         primaryStage.show();
     }

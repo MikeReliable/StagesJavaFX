@@ -13,12 +13,13 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Controller {
 
     File file;
     FileChooser fileChooser = new FileChooser();
-    SoSelection selection = new SoSelection();
+    Logic selection = new Logic();
 
     @FXML
     private TextField s01;
@@ -41,7 +42,7 @@ public class Controller {
     @FXML
     void open(ActionEvent event) {
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("data file","*.txt"));
+                new FileChooser.ExtensionFilter("data file","*.DAT"));
         fileChooser.setInitialDirectory(new File("C:\\"));
         file = fileChooser.showOpenDialog(new Stage());
         locat.clear();
@@ -49,20 +50,12 @@ public class Controller {
     }
 
     @FXML
-    void action(MouseEvent event) {
+    void action(MouseEvent event) throws IOException {
         text.clear();
-        if (s01.getText().equals("")) {
-            text.appendText("укажите начало интервала S0, МПа\n");
-        } else if (s02.getText().equals("")) {
-            text.appendText("укажите конец интервала S0, МПа\n");
-        } else if (step.getText().equals("")) {
-            text.appendText("укажите шаг интервала S0, МПа\n");
-        } else if (index.getText().equals("")) {
-            text.appendText("укажите показатель n\n");
-        } else if (file == null) {
-            text.appendText("файл не выбран\n");
+        if (file == null) {
+            text.appendText("\nФайл не выбран!\n");
         } else {
-            String result = selection.find(s01.getText(), s02.getText(), step.getText(), index.getText(), file);
+            String result = selection.find(file);
             text.clear();
             text.appendText(result);
         }
@@ -71,7 +64,7 @@ public class Controller {
     @FXML
     void about(ActionEvent event) {
         try {
-            Parent parent = FXMLLoader.load(getClass().getResource("about.fxml"));
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("about.fxml")));
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
             stage.setScene(scene);
@@ -82,12 +75,12 @@ public class Controller {
         }
     }
 
-    @FXML
-    void initialize() {
-        assert s01 != null : "fx:id=\"s01\" was not injected: check your FXML file 'form.fxml'.";
-        assert s02 != null : "fx:id=\"s02\" was not injected: check your FXML file 'form.fxml'.";
-        assert step != null : "fx:id=\"step\" was not injected: check your FXML file 'form.fxml'.";
-        assert text != null : "fx:id=\"text\" was not injected: check your FXML file 'form.fxml'.";
-
-    }
+//    @FXML
+//    void initialize() {
+//        assert s01 != null : "fx:id=\"s01\" was not injected: check your FXML file 'form.fxml'.";
+//        assert s02 != null : "fx:id=\"s02\" was not injected: check your FXML file 'form.fxml'.";
+//        assert step != null : "fx:id=\"step\" was not injected: check your FXML file 'form.fxml'.";
+//        assert text != null : "fx:id=\"text\" was not injected: check your FXML file 'form.fxml'.";
+//
+//    }
 }
