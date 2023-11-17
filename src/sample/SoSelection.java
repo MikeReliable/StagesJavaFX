@@ -239,6 +239,7 @@ public class SoSelection {
             if (S > S0) {
                 CordinateY = Math.log(S - S0);
                 data.getData().add(new XYChart.Data<>(CordinateX, CordinateY));
+                data.setNode(new ShowCoordinatesNode(CordinateX, CordinateY));
                 if (!bool) {
                     startGraphX = CordinateX;
                     startGraphY = CordinateY;

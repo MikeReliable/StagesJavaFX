@@ -76,7 +76,6 @@ public class Controller {
                 selection.graph(root, s01.getText());
                 stage.setScene(scene);
                 stage.setTitle("Chart");
-                stage.setFullScreen(true);
                 stage.show();
             }
         }
