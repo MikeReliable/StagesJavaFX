@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -69,12 +70,13 @@ public class Controller {
             text.appendText(result);
             if (s01.getText().equals(s02.getText())) {
 //                Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("chart.fxml")));
-                HBox root = new HBox();
+                StackPane root = new StackPane();
                 Scene scene = new Scene(root);
                 Stage stage = new Stage();
                 selection.graph(root, s01.getText());
                 stage.setScene(scene);
                 stage.setTitle("Chart");
+                stage.setFullScreen(true);
                 stage.show();
             }
         }

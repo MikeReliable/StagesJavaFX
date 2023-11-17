@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -197,8 +197,16 @@ public class SoSelection {
         return lines;
     }
 
-    public void graph(HBox root, String So) throws IOException {
+    public void graph(StackPane root, String So) {
         double logStartY = 0, logEndY = 0;
+        double startGraphX = 0;
+        double startGraphY = 0;
+        double endGraphX = 0;
+        double endGraphY = 0;
+        boolean bool = false;
+        double CordinateX = 0;
+        double CordinateY = 0;
+        double CordinateYMax = 0;
 
         //Defining the x axis
         NumberAxis xAxis = new NumberAxis();
@@ -223,27 +231,42 @@ public class SoSelection {
                 calculation.getNode().setStyle("-fx-stroke: red;")
         );
 
-        for (int i = 0; i < lines.size(); i++) {
-            String string = lines.get(i);
+        for (String string : lines) {
             String[] split1 = string.split("\t");
-            double CordinateX = Double.parseDouble(split1[1]);// Read ln(e) column
+            CordinateX = Double.parseDouble(split1[1]);// Read ln(e) column
             double S = Double.parseDouble(split1[2]); // Read S column
             double S0 = Double.parseDouble(So);
             if (S > S0) {
-                double CordinateY = Math.log(S - S0);
-                data.getData().add(new XYChart.Data(CordinateX, CordinateY));
+                CordinateY = Math.log(S - S0);
+                data.getData().add(new XYChart.Data<>(CordinateX, CordinateY));
+                if (!bool) {
+                    startGraphX = CordinateX;
+                    startGraphY = CordinateY;
+                    bool = true;
+                }
                 if (CordinateX == logStart) {
                     logStartY = CordinateY;
                 }
                 if (CordinateX == logEnd) {
                     logEndY = CordinateY;
                 }
+                if (CordinateY > CordinateYMax) {
+                    CordinateYMax = CordinateY;
+                }
 //                System.out.println(CordinateX + " " + CordinateY);
             }
         }
+        calculation.getData().add(new XYChart.Data<>(logStart, logStartY));
+        calculation.getData().add(new XYChart.Data<>(logEnd, logEndY));
 
-        calculation.getData().add(new XYChart.Data(logStart, logStartY));
-        calculation.getData().add(new XYChart.Data(logEnd, logEndY));
+        endGraphX = CordinateX;
+        endGraphY = CordinateYMax;
+        xAxis.setAutoRanging(false);
+        yAxis.setAutoRanging(false);
+        xAxis.setLowerBound(startGraphX - Math.abs(startGraphX * 0.01));
+        xAxis.setUpperBound(endGraphX + Math.abs(endGraphX * 0.01));
+        yAxis.setLowerBound(startGraphY - Math.abs(startGraphY * 0.01));
+        yAxis.setUpperBound(endGraphY + Math.abs(endGraphY * 0.01));
 
         //Setting the data to Line chart
         lineChart.getData().add(data);
