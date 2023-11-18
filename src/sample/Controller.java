@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -52,7 +51,7 @@ public class Controller {
     }
 
     @FXML
-    void action(MouseEvent event) throws IOException {
+    void action(MouseEvent event) {
         text.clear();
         if (s01.getText().equals("")) {
             text.appendText("укажите начало интервала S0, МПа\n");

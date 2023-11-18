@@ -238,8 +238,14 @@ public class SoSelection {
             double S0 = Double.parseDouble(So);
             if (S > S0) {
                 CordinateY = Math.log(S - S0);
-                data.getData().add(new XYChart.Data<>(CordinateX, CordinateY));
-                data.setNode(new ShowCoordinatesNode(CordinateX, CordinateY));
+                XYChart.Data chartData;
+                chartData = new XYChart.Data(CordinateX, CordinateY);
+                chartData.setNode(new ShowCoordinatesNode(CordinateX, CordinateY));
+                chartData.getNode().setStyle("-fx-padding: 2px;-fx-background-color: black;");
+                data.getData().add(chartData);
+
+//                data.setNode(new ShowCoordinatesNode(CordinateX, CordinateY));
+//                data.getData().add(new XYChart.Data<>(CordinateX, CordinateY));
                 if (!bool) {
                     startGraphX = CordinateX;
                     startGraphY = CordinateY;
