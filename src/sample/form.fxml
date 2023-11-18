@@ -7,37 +7,55 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #2E3348;"
-            xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sample.Controller">
-    <MenuBar prefHeight="25.0" prefWidth="600.0">
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" onAction="#open" text="Open"/>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-            <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
-        </Menu>
-    </MenuBar>
-    <Label layoutX="440.0" layoutY="36.0" prefHeight="39.0" prefWidth="70.0" text="Файл" textFill="WHITE">
-        <font>
-            <Font name="Times New Roman" size="24.0"/>
-        </font>
-    </Label>
-    <TextArea fx:id="locat" layoutX="25.0" layoutY="38.0" prefHeight="7.0" prefWidth="400.0"
-              promptText="файл не выбран"/>
-    <Button layoutX="505.0" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#action" text="Рассчитать">
-        <cursor>
-            <Cursor fx:constant="DEFAULT"/>
-        </cursor>
-    </Button>
-    <TextArea fx:id="text" layoutX="25.0" layoutY="100.0" prefHeight="270.0" prefWidth="550.0"
-              text="&#13;&#10;Программа для суммирования деформаций Ехх &#13;&#10;&#13;&#10;Файл данных *.txt&#13;&#10;1, 2 колонка - координата точки (х; у)&#13;&#10;3 колонка - значение Ехх"
-              wrapText="true">
-        <font>
-            <Font size="19.0"/>
-        </font>
-    </TextArea>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #2E3348;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+    <children>
+        <MenuBar prefHeight="25.0" prefWidth="600.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#open" text="Open" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <Label layoutX="40.0" layoutY="79.0" prefHeight="35.0" prefWidth="266.0" text="Выберите интервал S0" textFill="WHITE">
+            <font>
+                <Font name="Times New Roman" size="24.0" />
+            </font>
+        </Label>
+        <TextField fx:id="s01" layoutX="25.0" layoutY="113.0" prefHeight="25.0" prefWidth="90.0" promptText="Начало" />
+        <TextField fx:id="s02" layoutX="125.0" layoutY="113.0" prefHeight="25.0" prefWidth="90.0" promptText="Конец" />
+        <TextField fx:id="step" layoutX="225.0" layoutY="113.0" prefHeight="25.0" prefWidth="90.0" promptText="Шаг" />
+        <Button layoutX="500.0" layoutY="113.0" mnemonicParsing="false" onMouseClicked="#action" text="OK">
+            <cursor>
+                <Cursor fx:constant="DEFAULT" />
+            </cursor>
+        </Button>
+        <TextArea fx:id="text" layoutX="25.0" layoutY="150.0" prefHeight="225.0" prefWidth="550.0" text="Программа для рассчета стадийности от показателя S0  Файл данных *.txt,  1 колонка -деформация %, 2 - ln(e), 3- S" wrapText="true">
+            <font>
+                <Font size="19.0" />
+            </font>
+        </TextArea>
+        <TextField fx:id="index" layoutX="375.0" layoutY="113.0" prefHeight="25.0" prefWidth="90.0" promptText="Показатель n" />
+        <Label layoutX="340.0" layoutY="79.0" prefHeight="35.0" prefWidth="152.0" text="Показатель n" textFill="WHITE">
+            <font>
+                <Font name="Times New Roman" size="24.0" />
+            </font>
+        </Label>
+        <Label layoutX="440.0" layoutY="36.0" prefHeight="39.0" prefWidth="70.0" text="Файл" textFill="WHITE">
+            <font>
+                <Font name="Times New Roman" size="24.0" />
+            </font>
+        </Label>
+        <TextArea fx:id="locat" layoutX="25.0" layoutY="38.0" prefHeight="7.0" prefWidth="400.0" promptText="файл не выбран" />
+    </children>
 </AnchorPane>
