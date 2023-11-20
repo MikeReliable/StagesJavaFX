@@ -77,10 +77,10 @@ public class SoSelection {
 //                        System.out.println("S1:" + S1 + " S2:" + S2 + " S3:" + S3 + " S4:" + S4 + " j:" + j);
                         degreeCalc = Math.abs((numSum * S3 - S1 * S2) / (numSum * S4 - S1 * S1));  // определение коэффициента n
                         correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
-                        if (elongation < 4 || degreeCalc >= degree * 0.95 && degreeCalc <= degree * 1.05 && correlat > 0.95) { // условие поиска стадии по максимальному диапазону
+                        if (elongation < 1.25 || degreeCalc >= degree * 0.96 && degreeCalc <= degree * 1.04 && correlat > 0.96) { // условие поиска стадии по максимальному диапазону
 //                            System.out.println("degreeCalc:" + degreeCalc + " numSum: " + numSum + " elongation:" + elongation + " defStart:" + defStart);
 //                            System.out.println("Degree calculation: " + degreeCalc + "\tCorrelat: " + correlat);
-                            if (degreeCalc >= degree * 0.99 && degreeCalc <= degree * 1.04 && correlat > 0.96) {
+                            if (degreeCalc >= degree * 0.96 && degreeCalc <= degree * 1.04 && correlat > 0.96) {
 //                                correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
 //                                System.out.println("Degree calculation: " + degreeCalc + "\tCorrelat: " + correlat);
                                 String initialDefEnd = df.format(defEnd);
@@ -140,8 +140,8 @@ public class SoSelection {
                         correlatRevers = Math.abs((numSumRevers * S31 - S11 * S21) / Math.sqrt((numSumRevers * S41 - S11 * S11) * (numSumRevers * S51 - S21 * S21))); // коэффициент корреляции Пирсона
 //                    System.out.println("Degree calculation: " + degreeCalcRevers + "\tCorrelat: " + correlatRevers);
                         elongationRevers = defEndRevers - startPoint;
-                        if (degreeCalcRevers >= 0.95 * degree && degreeCalcRevers <= 1.05 * degree && correlatRevers > 0.95 || elongationRevers < 0.3) {
-                            if (degreeCalcRevers >= 0.95 * degree && degreeCalcRevers <= 1.05 * degree && correlatRevers > 0.95) {
+                        if (degreeCalcRevers >= 0.90 * degree && degreeCalcRevers <= 1.10 * degree && correlatRevers > 0.90 || elongationRevers < 0.4) {
+                            if (degreeCalcRevers >= 0.90 * degree && degreeCalcRevers <= 1.10 * degree && correlatRevers > 0.90) {
                                 if (elongationRevers > elongationReversMax) {
                                     elongationReversMax = elongationRevers;
 //                        System.out.println("Degree calculation: " + degreeCalcRevers + "\tCorrelat: " + correlatRevers + " j: " + numSumRevers);
@@ -201,11 +201,11 @@ public class SoSelection {
         double logStartY = 0, logEndY = 0;
         double startGraphX = 0;
         double startGraphY = 0;
-        double endGraphX = 0;
-        double endGraphY = 0;
+        double endGraphX;
+        double endGraphY;
         boolean bool = false;
         double CordinateX = 0;
-        double CordinateY = 0;
+        double CordinateY;
         double CordinateYMax = 0;
 
         //Defining the x axis
