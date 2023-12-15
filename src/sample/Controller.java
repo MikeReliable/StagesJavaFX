@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -41,6 +42,9 @@ public class Controller {
     private TextArea locat;
 
     @FXML
+    private CheckBox checkBox;
+
+    @FXML
     void open(ActionEvent event) {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("data file", "*.txt"));
@@ -64,7 +68,7 @@ public class Controller {
         } else if (file == null) {
             text.appendText("файл не выбран\n");
         } else {
-            String result = selection.find(s01.getText(), s02.getText(), step.getText(), index.getText(), file);
+            String result = selection.find(s01.getText(), s02.getText(), step.getText(), index.getText(), file, checkBox);
             text.clear();
             text.appendText(result);
             if (s01.getText().equals(s02.getText())) {
