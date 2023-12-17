@@ -58,7 +58,7 @@
             </font>
         </Label>
         <TextArea fx:id="locat" layoutX="25.0" layoutY="38.0" prefHeight="7.0" prefWidth="400.0" promptText="файл не выбран" />
-      <CheckBox fx:id="checkBox" layoutX="506.0" layoutY="47.0" mnemonicParsing="false" text="Долго" textFill="WHITE">
+      <CheckBox fx:id="checkBox" layoutX="506.0" layoutY="47.0" mnemonicParsing="false" text="Точно" textFill="WHITE">
          <font>
             <Font name="Times New Roman" size="18.0" />
          </font>

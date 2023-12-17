@@ -19,7 +19,7 @@ public class SoSelection {
 
     double logStart = 0, logEnd = 0;
     List<String> lines;
-    List<Point> pointList = new ArrayList<>();
+    List<String> linesCheck = new ArrayList<>();
 
     public String find(String S001, String S002, String step0, String n, File file, CheckBox checkBox) {
         int startRow = 1, endRow = 1;
@@ -48,71 +48,70 @@ public class SoSelection {
             for (double k = S01; k <= S02; k = k + step) {
                 String SO = df.format(k);
                 double elongationMax = 0;
-                double x1, x2, x3, y0, y00, y1, y2, y02, y3, y03;
+                double x1, x2, x3, y2, y02, y3, y03;
 //                System.out.println("k:" + k);
 
                 for (int i = 1; i < l; i = i + 25) {
                     double correlat, degreeCalc, numSum = 0, S1 = 0, S2 = 0, S3 = 0, S4 = 0, S5 = 0;
 //                System.out.println("Line num:" + (i + 1));
                     String m1 = lines.get(i);
+                    linesCheck.clear();
+                    linesCheck.add(m1);
                     String[] split1 = m1.split("\t");
 //                System.out.println(Arrays.deepToString(split1));
+                    // первая точка интервала
                     double defStart = Double.parseDouble(split1[0]); // Read Strain column
                     x1 = Double.parseDouble(split1[1]); // Read ln(e) column
-                    y00 = Double.parseDouble(split1[2]); // Read S column
-//                    System.out.println("y "+ (y00 - k));
-
-                    Point point = new Point();
-                    point.setStrainRelative(defStart);
-                    point.setLnStrainTrue(x1);
-                    point.setTrueStress(y00);
-                    pointList.clear();
-                    pointList.add(point);
 
                     if (checkBox.isSelected()) {
                         for (int j = i + 1; j < l; j = j + 25) {
                             String m2 = lines.get(j);
+                            linesCheck.add(m2);
                             String[] split2 = m2.split("\t");
                             double defEnd = Double.parseDouble(split2[0]); // Read Strain column
-                            x2 = Double.parseDouble(split2[1]); // Read ln(e) column
-                            y02 = Double.parseDouble(split2[2]); // Read S column
-
-                            point.setStrainRelative(defEnd);
-                            point.setLnStrainTrue(x2);
-                            point.setTrueStress(y02);
-                            pointList.add(point);
 
                             double elongation = defEnd - defStart;
+                            int size = linesCheck.size();
                             if (elongation > 2) { // отбраковка стадий меньше 2 %
-                                for (int m = 0; m < pointList.size() - 1; m += 50) {
-                                    y2 = Math.log(pointList.get(m).getTrueStress() - Double.parseDouble(String.valueOf(k)));
+                                for (int m = 1; m < size; m += 25) {
+                                    String neededLine = linesCheck.get(m);
+                                    String[] neededData = neededLine.split("\t");
+                                    x2 = Double.parseDouble(neededData[1]); // Read ln(e) column
+                                    y2 = Math.log(Double.parseDouble(neededData[2]) - Double.parseDouble(String.valueOf(k)));
                                     // Расчет коэффициента линейной аппроксимации
-                                    S1 += pointList.get(m).getLnStrainTrue();
+                                    S1 += x2;
                                     S2 += y2;
-                                    S3 += pointList.get(m).getLnStrainTrue() * y2;
-                                    S4 += pointList.get(m).getLnStrainTrue() * pointList.get(m).getLnStrainTrue();
+                                    S3 += x2 * y2;
+                                    S4 += x2 * x2;
                                     S5 += y2 * y2;
                                     numSum++;
 
                                     degreeCalc = Math.abs((numSum * S3 - S1 * S2) / (numSum * S4 - S1 * S1));  // определение коэффициента n
                                     if (degreeCalc >= degree * 0.99 && degreeCalc <= degree * 1.01) { // условие поиска стадии по максимальному диапазону
                                         double constantB = (S2 - degreeCalc * S1) / numSum; // определение коэффициента b
-                                        for (int o = 0; o < pointList.size() - 1; o += 50) {
-                                            if (pointList.get(o).getStrainRelative() - defStart > 2) { // отбраковка стадий меньше 2 %
-                                                y2 = Math.log(pointList.get(o).getTrueStress() - Double.parseDouble(String.valueOf(k)));
-                                                double yCalculated = degreeCalc * pointList.get(o).getLnStrainTrue() + constantB;
+                                        for (int o = 1; o < size; o += 50) {
+                                            String m3 = linesCheck.get(o);
+
+                                            String[] split3 = m3.split("\t");
+                                            double strain = Double.parseDouble(split3[0]); // Read Strain column
+                                            x2 = Double.parseDouble(split3[1]); // Read ln(e) column
+                                            y02 = Double.parseDouble(split3[2]); // Read S column
+                                            if (strain - defStart > 2) { // отбраковка стадий меньше 2 %
+                                                y2 = Math.log(y02 - Double.parseDouble(String.valueOf(k)));
+                                                double yCalculated = degreeCalc * x2 + constantB;
 
                                                 if (Math.abs(y2) - Math.abs(yCalculated) <= 0.003 && Math.abs(y2) - Math.abs(yCalculated) >= -0.003) {
                                                     correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
+                                                    elongation = strain - defStart;
                                                     if (elongation > elongationMax) {
 //                                                System.out.println(elongation);
                                                         elongationMax = elongation;
-                                                        String initialDefEnd = df.format(pointList.get(o).getStrainRelative());
+                                                        String initialDefEnd = df.format(strain);
                                                         String initialDefStart = df.format(defStart);
                                                         String initialElongation = df.format(elongationMax);
                                                         String initialResult = df.format(correlat);
                                                         logStart = x1;
-                                                        logEnd = pointList.get(o).getLnStrainTrue();
+                                                        logEnd = x2;
                                                         answerRevers = "\nS0=" + SO + " " + "n=" + degreeString + "\nНачало стадии: " + initialDefStart + "\tОкончание стадии: " + initialDefEnd + "\n"
                                                                 + "Продолжительность: " + initialElongation + "\tОтклонение: R=" + initialResult + "\n" +
                                                                 "ln(e)_start=" + logStart + " " + "\tln(e)_end=" + logEnd + "\n";
