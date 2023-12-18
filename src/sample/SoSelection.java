@@ -35,11 +35,21 @@ public class SoSelection {
         DecimalFormat df = new DecimalFormat("##.###");
         String degreeString = df.format(degree);
         try {
+            int graphStep;
             double S01 = Double.parseDouble(S001);
             double S02 = Double.parseDouble(S002);
             double step = Double.parseDouble(step0);
             lines = readFile(file);
             int l = lines.size();
+            if (l > 7500) {
+                graphStep = 50;
+            } else if (l > 2250) {
+                graphStep = 25;
+            } else if (l > 750) {
+                graphStep = 10;
+            } else {
+                graphStep = 1;
+            }
 //            System.out.println("Lines: " + l);
             if (S01 > S02) {
                 result = "Ошибка! Недопустимое значение интервала!";
@@ -51,7 +61,7 @@ public class SoSelection {
                 double x1, x2, x3, y2, y02, y3, y03;
 //                System.out.println("k:" + k);
 
-                for (int i = 1; i < l; i = i + 25) {
+                for (int i = 1; i < l; i = i + graphStep) {
                     double correlat, degreeCalc, numSum = 0, S1 = 0, S2 = 0, S3 = 0, S4 = 0, S5 = 0;
 //                System.out.println("Line num:" + (i + 1));
                     String m1 = lines.get(i);
@@ -64,7 +74,7 @@ public class SoSelection {
                     x1 = Double.parseDouble(split1[1]); // Read ln(e) column
 
                     if (checkBox.isSelected()) {
-                        for (int j = i + 1; j < l; j = j + 25) {
+                        for (int j = i + 1; j < l; j = j + graphStep) {
                             String m2 = lines.get(j);
                             linesCheck.add(m2);
                             String[] split2 = m2.split("\t");
@@ -73,7 +83,7 @@ public class SoSelection {
                             double elongation = defEnd - defStart;
                             int size = linesCheck.size();
                             if (elongation > 2) { // отбраковка стадий меньше 2 %
-                                for (int m = 1; m < size; m += 25) {
+                                for (int m = 1; m < size; m += graphStep) {
                                     String neededLine = linesCheck.get(m);
                                     String[] neededData = neededLine.split("\t");
                                     x2 = Double.parseDouble(neededData[1]); // Read ln(e) column
@@ -124,7 +134,7 @@ public class SoSelection {
                             }
                         }
                     } else {
-                        for (int j = i + 1; j < l; j = j + 25) {
+                        for (int j = i + 1; j < l; j = j + graphStep) {
                             String m2 = lines.get(j);
                             String[] split2 = m2.split("\t");
                             double defEnd = Double.parseDouble(split2[0]); // Read Strain column
@@ -174,7 +184,7 @@ public class SoSelection {
                         // уточнение искомого интервала за счет обрезки кривой справа
                         // решение проблемы отклонения кривой от линейности при больших массивах данных
                         double elongationReversMax = 0;
-                        for (int q = endRow; q > startRow; q = q - 25) {  // Revers start
+                        for (int q = endRow; q > startRow; q = q - graphStep) {  // Revers start
                             double degreeCalcRevers, correlatRevers;
                             double numSumRevers = 0;
                             double elongationRevers;
@@ -183,7 +193,7 @@ public class SoSelection {
                             String[] split2 = m2.split("\t");
                             double startPoint = Double.parseDouble(split2[0]); // Read Strain column
 //                System.out.println("startRow: " + startRow + " endRow: " + endRow);
-                            for (int m = q; m < endRow; m = m + 25) {
+                            for (int m = q; m < endRow; m = m + graphStep) {
 //                    System.out.println("k: " + k + " endRow: " + endRow);
                                 String m3 = lines.get(m);
                                 String[] split3 = m3.split("\t");
@@ -255,7 +265,7 @@ public class SoSelection {
         String line;
         while ((line = reader.readLine()) != null) {
             line = line.replace(',', '.');
-            if (!line.contains("--")) {
+            if (!line.contains("--") && !line.contains("\t\t")) {
                 lines.add(line);
                 lines.removeIf(item -> item == null || "".equals(item));
             }
