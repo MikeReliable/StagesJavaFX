@@ -71,7 +71,7 @@ public class Controller {
             String result = selection.find(s01.getText(), s02.getText(), step.getText(), index.getText(), file, checkBox);
             text.clear();
             text.appendText(result);
-            if (s01.getText().equals(s02.getText())) {
+            if (s01.getText().equals(s02.getText()) && !result.contains("Нет подходящего интервала")) {
 //                Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("chart.fxml")));
                 StackPane root = new StackPane();
                 Scene scene = new Scene(root);

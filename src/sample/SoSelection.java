@@ -97,37 +97,41 @@ public class SoSelection {
                                     numSum++;
 
                                     degreeCalc = Math.abs((numSum * S3 - S1 * S2) / (numSum * S4 - S1 * S1));  // определение коэффициента n
-                                    if (degreeCalc >= degree * 0.99 && degreeCalc <= degree * 1.01) { // условие поиска стадии по максимальному диапазону
+                                    if (degreeCalc >= degree * 0.98 && degreeCalc <= degree * 1.02) { // условие поиска стадии по максимальному диапазону
                                         double constantB = (S2 - degreeCalc * S1) / numSum; // определение коэффициента b
                                         for (int o = 1; o < size; o += 50) {
                                             String m3 = linesCheck.get(o);
-
                                             String[] split3 = m3.split("\t");
                                             double strain = Double.parseDouble(split3[0]); // Read Strain column
                                             x2 = Double.parseDouble(split3[1]); // Read ln(e) column
                                             y02 = Double.parseDouble(split3[2]); // Read S column
-                                            if (strain - defStart > 2) { // отбраковка стадий меньше 2 %
-                                                y2 = Math.log(y02 - Double.parseDouble(String.valueOf(k)));
-                                                double yCalculated = degreeCalc * x2 + constantB;
-
-                                                if (Math.abs(y2) - Math.abs(yCalculated) <= 0.003 && Math.abs(y2) - Math.abs(yCalculated) >= -0.003) {
-                                                    correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
-                                                    elongation = strain - defStart;
-                                                    if (elongation > elongationMax) {
+                                            y2 = Math.log(y02 - Double.parseDouble(String.valueOf(k)));
+                                            double yCalculated = degreeCalc * x2 + constantB;
+                                            double v = Math.abs(y2) - Math.abs(yCalculated);
+                                            if (v <= 0.01 && v >= -0.01) {
+//                                                    System.out.println("constantB " + constantB);
+//                                                    System.out.println("y2 " + y2);
+//                                                    System.out.println("yCalculated " + yCalculated);
+                                                correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
+                                                elongation = strain - defStart;
+                                                if (elongation > 2 && elongation > elongationMax) {
+//                                                        System.out.println(v);
 //                                                System.out.println(elongation);
-                                                        elongationMax = elongation;
-                                                        String initialDefEnd = df.format(strain);
-                                                        String initialDefStart = df.format(defStart);
-                                                        String initialElongation = df.format(elongationMax);
-                                                        String initialResult = df.format(correlat);
-                                                        logStart = x1;
-                                                        logEnd = x2;
-                                                        answerRevers = "\nS0=" + SO + " " + "n=" + degreeString + "\nНачало стадии: " + initialDefStart + "\tОкончание стадии: " + initialDefEnd + "\n"
-                                                                + "Продолжительность: " + initialElongation + "\tОтклонение: R=" + initialResult + "\n" +
-                                                                "ln(e)_start=" + logStart + " " + "\tln(e)_end=" + logEnd + "\n";
-                                                    }
+                                                    elongationMax = elongation;
+                                                    String initialDefEnd = df.format(strain);
+                                                    String initialDefStart = df.format(defStart);
+                                                    String initialElongation = df.format(elongationMax);
+                                                    String initialResult = df.format(correlat);
+                                                    logStart = x1;
+                                                    logEnd = x2;
+                                                    answerRevers = "\nS0=" + SO + " " + "n=" + degreeString + "\nНачало стадии: " + initialDefStart + "\tОкончание стадии: " + initialDefEnd + "\n"
+                                                            + "Продолжительность: " + initialElongation + "\tОтклонение: R=" + initialResult + "\n" +
+                                                            "ln(e)_start=" + logStart + " " + "\tln(e)_end=" + logEnd + "\n";
                                                 }
+                                            } else {
+                                                o = size;
                                             }
+
                                         }
                                     }
                                 }
