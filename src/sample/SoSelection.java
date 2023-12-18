@@ -61,7 +61,7 @@ public class SoSelection {
                 double x1, x2, x3, y2, y02, y3, y03;
 //                System.out.println("k:" + k);
 
-                for (int i = 1; i < l; i = i + graphStep) {
+                for (int i = 1; i < l; i += graphStep) {
                     double correlat, degreeCalc, numSum = 0, S1 = 0, S2 = 0, S3 = 0, S4 = 0, S5 = 0;
 //                System.out.println("Line num:" + (i + 1));
                     String m1 = lines.get(i);
@@ -74,7 +74,7 @@ public class SoSelection {
                     x1 = Double.parseDouble(split1[1]); // Read ln(e) column
 
                     if (checkBox.isSelected()) {
-                        for (int j = i + 1; j < l; j = j + graphStep) {
+                        for (int j = i + 1; j < l; j += graphStep) {
                             String m2 = lines.get(j);
                             linesCheck.add(m2);
                             String[] split2 = m2.split("\t");
@@ -99,7 +99,7 @@ public class SoSelection {
                                     degreeCalc = Math.abs((numSum * S3 - S1 * S2) / (numSum * S4 - S1 * S1));  // определение коэффициента n
                                     if (degreeCalc >= degree * 0.98 && degreeCalc <= degree * 1.02) { // условие поиска стадии по максимальному диапазону
                                         double constantB = (S2 - degreeCalc * S1) / numSum; // определение коэффициента b
-                                        for (int o = 1; o < size; o += 50) {
+                                        for (int o = 1; o < m; o += graphStep) {
                                             String m3 = linesCheck.get(o);
                                             String[] split3 = m3.split("\t");
                                             double strain = Double.parseDouble(split3[0]); // Read Strain column
@@ -109,14 +109,9 @@ public class SoSelection {
                                             double yCalculated = degreeCalc * x2 + constantB;
                                             double v = Math.abs(y2) - Math.abs(yCalculated);
                                             if (v <= 0.01 && v >= -0.01) {
-//                                                    System.out.println("constantB " + constantB);
-//                                                    System.out.println("y2 " + y2);
-//                                                    System.out.println("yCalculated " + yCalculated);
                                                 correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
                                                 elongation = strain - defStart;
-                                                if (elongation > 2 && elongation > elongationMax) {
-//                                                        System.out.println(v);
-//                                                System.out.println(elongation);
+                                                if (elongation > 2 && elongation > elongationMax && o > m - 2 * graphStep) {
                                                     elongationMax = elongation;
                                                     String initialDefEnd = df.format(strain);
                                                     String initialDefStart = df.format(defStart);
@@ -129,16 +124,15 @@ public class SoSelection {
                                                             "ln(e)_start=" + logStart + " " + "\tln(e)_end=" + logEnd + "\n";
                                                 }
                                             } else {
-                                                o = size;
+                                                o = m;
                                             }
-
                                         }
                                     }
                                 }
                             }
                         }
                     } else {
-                        for (int j = i + 1; j < l; j = j + graphStep) {
+                        for (int j = i + 1; j < l; j += graphStep) {
                             String m2 = lines.get(j);
                             String[] split2 = m2.split("\t");
                             double defEnd = Double.parseDouble(split2[0]); // Read Strain column
@@ -156,7 +150,7 @@ public class SoSelection {
 //                        System.out.println("S1:" + S1 + " S2:" + S2 + " S3:" + S3 + " S4:" + S4 + " j:" + j);
                             degreeCalc = Math.abs((numSum * S3 - S1 * S2) / (numSum * S4 - S1 * S1));  // определение коэффициента n
                             correlat = Math.abs((numSum * S3 - S1 * S2) / Math.sqrt((numSum * S4 - S1 * S1) * (numSum * S5 - S2 * S2))); // коэффициент корреляции Пирсона
-                            if (elongation < 2 || degreeCalc >= degree * 0.96 && degreeCalc <= degree * 1.04 && correlat > 0.96) { // условие поиска стадии по максимальному диапазону
+                            if (elongation < 2 || degreeCalc >= degree * 0.95 && degreeCalc <= degree * 1.05 && correlat > 0.95) { // условие поиска стадии по максимальному диапазону
 //                            System.out.println("degreeCalc:" + degreeCalc + " numSum: " + numSum + " elongation:" + elongation + " defStart:" + defStart);
 //                            System.out.println("Degree calculation: " + degreeCalc + "\tCorrelat: " + correlat);
                                 if (degreeCalc >= degree * 0.96 && degreeCalc <= degree * 1.04 && correlat > 0.96) {
@@ -188,7 +182,7 @@ public class SoSelection {
                         // уточнение искомого интервала за счет обрезки кривой справа
                         // решение проблемы отклонения кривой от линейности при больших массивах данных
                         double elongationReversMax = 0;
-                        for (int q = endRow; q > startRow; q = q - graphStep) {  // Revers start
+                        for (int q = endRow; q > startRow; q -= graphStep) {  // Revers start
                             double degreeCalcRevers, correlatRevers;
                             double numSumRevers = 0;
                             double elongationRevers;
@@ -197,7 +191,7 @@ public class SoSelection {
                             String[] split2 = m2.split("\t");
                             double startPoint = Double.parseDouble(split2[0]); // Read Strain column
 //                System.out.println("startRow: " + startRow + " endRow: " + endRow);
-                            for (int m = q; m < endRow; m = m + graphStep) {
+                            for (int m = q; m < endRow; m += graphStep) {
 //                    System.out.println("k: " + k + " endRow: " + endRow);
                                 String m3 = lines.get(m);
                                 String[] split3 = m3.split("\t");
@@ -218,8 +212,8 @@ public class SoSelection {
                                 correlatRevers = Math.abs((numSumRevers * S31 - S11 * S21) / Math.sqrt((numSumRevers * S41 - S11 * S11) * (numSumRevers * S51 - S21 * S21))); // коэффициент корреляции Пирсона
 //                    System.out.println("Degree calculation: " + degreeCalcRevers + "\tCorrelat: " + correlatRevers);
                                 elongationRevers = defEndRevers - startPoint;
-                                if (degreeCalcRevers >= 0.90 * degree && degreeCalcRevers <= 1.10 * degree && correlatRevers > 0.90 || elongationRevers < 0.4) {
-                                    if (degreeCalcRevers >= 0.90 * degree && degreeCalcRevers <= 1.10 * degree && correlatRevers > 0.90) {
+                                if (degreeCalcRevers >= 0.95 * degree && degreeCalcRevers <= 1.05 * degree && correlatRevers > 0.95 || elongationRevers < 0.4) {
+                                    if (degreeCalcRevers >= 0.95 * degree && degreeCalcRevers <= 1.05 * degree && correlatRevers > 0.95) {
                                         if (elongationRevers > 2 && elongationRevers > elongationReversMax) {
                                             elongationReversMax = elongationRevers;
 //                        System.out.println("Degree calculation: " + degreeCalcRevers + "\tCorrelat: " + correlatRevers + " j: " + numSumRevers);
